@@ -35,8 +35,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
-        /* Style agar konten HTML (seperti paragraf dari JSON) rapi */
-        .isi-konten p { margin-bottom: 1.25rem; leading-relaxed; }
+        .isi-konten p { margin-bottom: 1.25rem; line-height: 1.8; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
@@ -60,28 +59,30 @@
             <p class="text-sm text-gray-500 font-medium">Memuat isi berita lengkap...</p>
         </div>
 
-        <div id="error" class="hidden bg-red-50 border border-red-200 text-red-700 p-6 rounded-2xl text-center space-y-3" style="display: none;">
+        <div id="error" class="hidden bg-red-50 border border-red-200 text-red-700 p-6 rounded-2xl text-center space-y-3">
             <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto"></i>
-            <p id="error-text" class="font-semibold text-sm">Artikel tidak ditemukan atau file JSON salah.</p>
+            <p id="error-text" class="font-semibold text-sm">Artikel tidak ditemukan atau tautan salah.</p>
             <a href="../#berita" class="inline-block text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2 rounded-lg transition-colors">Kembali ke Beranda</a>
         </div>
 
-        <article id="article-content" class="hidden bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-gray-100" style="display: none;">
-            
+        <article id="article-content" class="hidden bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-gray-100">
             <h1 id="judul-berita" class="text-2xl md:text-4xl font-bold font-serif-custom text-gray-900 leading-tight mb-4"></h1>
             
-            <div class="flex items-center gap-2 text-xs font-medium text-gray-400 border-b border-gray-100 pb-6 mb-6">
-                <i data-lucide="calendar" class="w-4 h-4 text-emerald-medium"></i>
-                <span id="tanggal-berita"></span>
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-6 mb-6">
+                <div class="flex items-center gap-2 text-xs font-medium text-gray-400">
+                    <i data-lucide="calendar" class="w-4 h-4 text-emerald-medium"></i>
+                    <span id="tanggal-berita"></span>
+                </div>
+                <button onclick="salinTautanSitus()" class="inline-flex items-center gap-1 text-xs text-emerald-deep font-semibold bg-emerald-soft border border-emerald-light px-2.5 py-1.5 rounded-md hover:bg-emerald-light transition-all">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i> <span id="copy-text">Salin Tautan Berita</span>
+                </button>
             </div>
 
             <div class="overflow-hidden rounded-2xl bg-gray-100 mb-8 border border-gray-100 shadow-sm">
-                <img src="" id="gambar-berita" class="w-full h-auto max-h-[450px] object-cover" alt="Gambar Utama Berita">
+                <img src="" id="gambar-berita" class="w-full h-auto max-h-[450px] object-cover" alt="Gambar Utama">
             </div>
 
-            <div id="text-berita" class="isi-konten text-gray-700 text-base md:text-lg leading-relaxed space-y-4">
-                </div>
-
+            <div id="text-berita" class="isi-konten text-gray-700 text-base md:text-lg leading-relaxed space-y-4"></div>
         </article>
     </main>
 
@@ -90,50 +91,66 @@
     </footer>
 
     <script>
-        // Inisialisasi ikon awal
         lucide.createIcons();
 
-        // 1. Tangkap parameter dari URL (Contoh URL: view/?file=fileartikel1.json)
+        // 1. Tangkap parameter enkripsi Base64 dari URL browser
         const urlParams = new URLSearchParams(window.location.search);
-        const namaFileJson = urlParams.get('file');
+        const fileParamBase64 = urlParams.get('file');
 
-        if (namaFileJson) {
-            // 2. Lakukan Fetch ke file json yang dituju (berada di dalam folder yang sama /view/)
-            fetch(namaFileJson)
-                .then(response => {
-                    if (!response.ok) throw new Error('File berita tidak ditemukan di server.');
-                    return response.json();
-                })
-                .then(artikel => {
-                    // Sembunyikan elemen loading
-                    document.getElementById('loading').style.display = 'none';
-                    
-                    // Isi komponen HTML dengan data dari JSON
-                    document.getElementById('judul-berita').innerText = artikel.judul;
-                    document.getElementById('tanggal-berita').innerText = artikel.tanggal;
-                    document.getElementById('gambar-berita').src = artikel.gambar;
-                    document.getElementById('gambar-berita').alt = artikel.judul;
-                    
-                    // Menggunakan innerHTML agar tag HTML di dalam konten JSON (seperti <p> atau <b>) bisa diterjemahkan browser
-                    document.getElementById('text-berita').innerHTML = artikel.konten;
-                    
-                    // Tampilkan kotak artikel
-                    document.getElementById('article-content').style.display = 'block';
-                    
-                    // Render ulang ikon yang baru masuk
-                    lucide.createIcons();
-                })
-                .catch(error => {
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('error-text').innerText = error.message;
-                    document.getElementById('error').style.display = 'block';
-                    lucide.createIcons();
-                });
+        if (fileParamBase64) {
+            try {
+                // 2. Dekode Base64 kembali menjadi nama file dasar (misal: 'fileartikel1')
+                const namaBerkasBersih = atob(fileParamBase64);
+
+                // 3. Inject file .js secara dinamis (misal: memanggil 'fileartikel1.js')
+                const scriptTag = document.createElement('script');
+                scriptTag.src = namaBerkasBersih + '.js';
+
+                // 4. Ketika file .js berhasil diunduh dan dibaca oleh browser
+                scriptTag.onload = function() {
+                    if (typeof artikelData !== 'undefined') {
+                        document.getElementById('loading').style.display = 'none';
+                        
+                        document.getElementById('judul-berita').innerText = artikelData.judul;
+                        document.getElementById('tanggal-berita').innerText = artikelData.tanggal;
+                        document.getElementById('gambar-berita').src = artikelData.gambar;
+                        document.getElementById('gambar-berita').alt = artikelData.judul;
+                        document.getElementById('text-berita').innerHTML = artikelData.konten;
+                        
+                        document.getElementById('article-content').style.display = 'block';
+                        lucide.createIcons();
+                    } else {
+                        tampilkanError("Format data di dalam file .js salah.");
+                    }
+                };
+
+                // Jika file .js gagal dipanggil (Error 404 / tidak ada)
+                scriptTag.onerror = function() {
+                    tampilkanError("Berkas berita lengkap tidak ditemukan di server GitHub.");
+                };
+
+                document.body.appendChild(scriptTag);
+
+            } catch (e) {
+                tampilkanError("Format tautan enkripsi token artikel tidak sah.");
+            }
         } else {
+            tampilkanError("Akses ditolak. Tidak ada parameter berita yang dipilih.");
+        }
+
+        function tampilkanError(pesan) {
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('error-text').innerText = "Akses ditolak. Tidak ada berkas artikel yang dipilih.";
+            document.getElementById('error-text').innerText = pesan;
             document.getElementById('error').style.display = 'block';
             lucide.createIcons();
+        }
+
+        function salinTautanSitus() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const copyText = document.getElementById('copy-text');
+                copyText.innerText = 'Tautan Berhasil Disalin!';
+                setTimeout(() => { copyText.innerText = 'Salin Tautan Berita'; }, 3000);
+            });
         }
     </script>
 </body>
