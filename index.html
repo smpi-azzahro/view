@@ -107,6 +107,9 @@
                 if (typeof artikelData !== 'undefined') {
                     document.getElementById('loading').style.display = 'none';
                     
+                    // Mengubah title tab browser secara dinamis mengikuti judul berita
+                    document.title = artikelData.judul + " - SMP Islam Az-Zahro";
+                    
                     document.getElementById('judul-berita').innerText = artikelData.judul;
                     document.getElementById('tanggal-berita').innerText = artikelData.tanggal;
                     document.getElementById('gambar-berita').src = artikelData.gambar;
@@ -134,6 +137,10 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('error-text').innerText = pesan;
             document.getElementById('error').style.display = 'block';
+            
+            // Mengubah title menjadi 'Error' agar informatif jika gagal memuat
+            document.title = "Berita Tidak Ditemukan - SMP Islam Az-Zahro";
+            
             lucide.createIcons();
         }
 
