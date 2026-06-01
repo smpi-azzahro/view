@@ -93,47 +93,39 @@
     <script>
         lucide.createIcons();
 
-        // 1. Tangkap parameter enkripsi Base64 dari URL browser
+        // 1. Tangkap langsung teks parameter dari URL (misal: 'fileartikel1')
         const urlParams = new URLSearchParams(window.location.search);
-        const fileParamBase64 = urlParams.get('file');
+        const namaBerkasBersih = urlParams.get('file');
 
-        if (fileParamBase64) {
-            try {
-                // 2. Dekode Base64 kembali menjadi nama file dasar (misal: 'fileartikel1')
-                const namaBerkasBersih = atob(fileParamBase64);
+        if (namaBerkasBersih) {
+            // 2. Buat tag <script> dinamis untuk memanggil file .js asli (misal: 'fileartikel1.js')
+            const scriptTag = document.createElement('script');
+            scriptTag.src = namaBerkasBersih + '.js';
 
-                // 3. Inject file .js secara dinamis (misal: memanggil 'fileartikel1.js')
-                const scriptTag = document.createElement('script');
-                scriptTag.src = namaBerkasBersih + '.js';
+            // 3. Ketika berkas file .js dimuat dengan sukses
+            scriptTag.onload = function() {
+                if (typeof artikelData !== 'undefined') {
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    document.getElementById('judul-berita').innerText = artikelData.judul;
+                    document.getElementById('tanggal-berita').innerText = artikelData.tanggal;
+                    document.getElementById('gambar-berita').src = artikelData.gambar;
+                    document.getElementById('gambar-berita').alt = artikelData.judul;
+                    document.getElementById('text-berita').innerHTML = artikelData.konten;
+                    
+                    document.getElementById('article-content').style.display = 'block';
+                    lucide.createIcons();
+                } else {
+                    tampilkanError("Format data di dalam file .js salah.");
+                }
+            };
 
-                // 4. Ketika file .js berhasil diunduh dan dibaca oleh browser
-                scriptTag.onload = function() {
-                    if (typeof artikelData !== 'undefined') {
-                        document.getElementById('loading').style.display = 'none';
-                        
-                        document.getElementById('judul-berita').innerText = artikelData.judul;
-                        document.getElementById('tanggal-berita').innerText = artikelData.tanggal;
-                        document.getElementById('gambar-berita').src = artikelData.gambar;
-                        document.getElementById('gambar-berita').alt = artikelData.judul;
-                        document.getElementById('text-berita').innerHTML = artikelData.konten;
-                        
-                        document.getElementById('article-content').style.display = 'block';
-                        lucide.createIcons();
-                    } else {
-                        tampilkanError("Format data di dalam file .js salah.");
-                    }
-                };
+            // Jika file .js tidak ditemukan (Error 404)
+            scriptTag.onerror = function() {
+                tampilkanError("Berkas berita lengkap tidak ditemukan di server GitHub.");
+            };
 
-                // Jika file .js gagal dipanggil (Error 404 / tidak ada)
-                scriptTag.onerror = function() {
-                    tampilkanError("Berkas berita lengkap tidak ditemukan di server GitHub.");
-                };
-
-                document.body.appendChild(scriptTag);
-
-            } catch (e) {
-                tampilkanError("Format tautan enkripsi token artikel tidak sah.");
-            }
+            document.body.appendChild(scriptTag);
         } else {
             tampilkanError("Akses ditolak. Tidak ada parameter berita yang dipilih.");
         }
