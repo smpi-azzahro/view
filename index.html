@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Berita - SMP Islam Az-Zahro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            deep: '#0F5132',
+                            medium: '#146c43',
+                            light: '#d1e7dd',
+                            soft: '#f0fdf4'
+                        },
+                        gold: {
+                            accent: '#D4AF37',
+                            muted: '#c5a059',
+                            light: '#fbf7eb'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-serif-custom { font-family: 'Playfair Display', serif; }
+        /* Style agar konten HTML (seperti paragraf dari JSON) rapi */
+        .isi-konten p { margin-bottom: 1.25rem; leading-relaxed; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <header class="bg-emerald-deep text-white shadow-md sticky top-0 z-50 border-b border-emerald-medium/30">
+        <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <img src="https://azzahrolocare.github.io/presensi-smp-smk-azzahro/logo-smp-azzahro.png" alt="Logo" class="w-9 h-9 object-contain">
+                <span class="font-serif-custom font-bold text-sm tracking-wide hidden sm:block">SMP ISLAM AZ-ZAHRO</span>
+            </div>
+            <a href="../#berita" class="inline-flex items-center gap-2 text-xs font-bold text-emerald-deep bg-gold-accent hover:bg-yellow-400 px-4 py-2 rounded-lg transition-colors shadow-sm">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Berita
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 py-10">
+        
+        <div id="loading" class="flex flex-col items-center justify-center py-20 space-y-3">
+            <div class="w-10 h-10 border-4 border-emerald-medium border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm text-gray-500 font-medium">Memuat isi berita lengkap...</p>
+        </div>
+
+        <div id="error" class="hidden bg-red-50 border border-red-200 text-red-700 p-6 rounded-2xl text-center space-y-3" style="display: none;">
+            <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto"></i>
+            <p id="error-text" class="font-semibold text-sm">Artikel tidak ditemukan atau file JSON salah.</p>
+            <a href="../#berita" class="inline-block text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-4 py-2 rounded-lg transition-colors">Kembali ke Beranda</a>
+        </div>
+
+        <article id="article-content" class="hidden bg-white rounded-3xl p-6 md:p-10 shadow-sm border border-gray-100" style="display: none;">
+            
+            <h1 id="judul-berita" class="text-2xl md:text-4xl font-bold font-serif-custom text-gray-900 leading-tight mb-4"></h1>
+            
+            <div class="flex items-center gap-2 text-xs font-medium text-gray-400 border-b border-gray-100 pb-6 mb-6">
+                <i data-lucide="calendar" class="w-4 h-4 text-emerald-medium"></i>
+                <span id="tanggal-berita"></span>
+            </div>
+
+            <div class="overflow-hidden rounded-2xl bg-gray-100 mb-8 border border-gray-100 shadow-sm">
+                <img src="" id="gambar-berita" class="w-full h-auto max-h-[450px] object-cover" alt="Gambar Utama Berita">
+            </div>
+
+            <div id="text-berita" class="isi-konten text-gray-700 text-base md:text-lg leading-relaxed space-y-4">
+                </div>
+
+        </article>
+    </main>
+
+    <footer class="bg-gray-100 border-t border-gray-200 py-6 mt-20 text-center text-xs text-gray-400">
+        <p>&copy; 2026 SMP Islam Az-Zahro. Dokumen Informasi Resmi digital.</p>
+    </footer>
+
+    <script>
+        // Inisialisasi ikon awal
+        lucide.createIcons();
+
+        // 1. Tangkap parameter dari URL (Contoh URL: view/?file=fileartikel1.json)
+        const urlParams = new URLSearchParams(window.location.search);
+        const namaFileJson = urlParams.get('file');
+
+        if (namaFileJson) {
+            // 2. Lakukan Fetch ke file json yang dituju (berada di dalam folder yang sama /view/)
+            fetch(namaFileJson)
+                .then(response => {
+                    if (!response.ok) throw new Error('File berita tidak ditemukan di server.');
+                    return response.json();
+                })
+                .then(artikel => {
+                    // Sembunyikan elemen loading
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // Isi komponen HTML dengan data dari JSON
+                    document.getElementById('judul-berita').innerText = artikel.judul;
+                    document.getElementById('tanggal-berita').innerText = artikel.tanggal;
+                    document.getElementById('gambar-berita').src = artikel.gambar;
+                    document.getElementById('gambar-berita').alt = artikel.judul;
+                    
+                    // Menggunakan innerHTML agar tag HTML di dalam konten JSON (seperti <p> atau <b>) bisa diterjemahkan browser
+                    document.getElementById('text-berita').innerHTML = artikel.konten;
+                    
+                    // Tampilkan kotak artikel
+                    document.getElementById('article-content').style.display = 'block';
+                    
+                    // Render ulang ikon yang baru masuk
+                    lucide.createIcons();
+                })
+                .catch(error => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('error-text').innerText = error.message;
+                    document.getElementById('error').style.display = 'block';
+                    lucide.createIcons();
+                });
+        } else {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error-text').innerText = "Akses ditolak. Tidak ada berkas artikel yang dipilih.";
+            document.getElementById('error').style.display = 'block';
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
