@@ -95,7 +95,7 @@
 
         // 1. Tangkap langsung teks parameter dari URL (misal: 'fileartikel1')
         const urlParams = new URLSearchParams(window.location.search);
-        const namaBerkasBersih = urlParams.get('file');
+        const namaBerkasBersih = urlParams.get('news');
 
         if (namaBerkasBersih) {
             // 2. Buat tag <script> dinamis untuk memanggil file .js asli (misal: 'fileartikel1.js')
