@@ -1,4 +1,4 @@
-artikelData = {
+const artikelData = {
   "judul": "Siswa Kelas IX SMP Islam Az-Zahro Bondowoso Ikuti Tes Kemampuan Akademik (TKA) Berbasis Komputer",
   "gambar": "https://smpi-azzahro.github.io/view/img/pelaksanaan-tka-2026.jpeg",
   "tanggal": "April 6, 2026",
