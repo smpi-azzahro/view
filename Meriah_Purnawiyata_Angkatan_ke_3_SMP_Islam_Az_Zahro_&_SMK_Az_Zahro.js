@@ -1,5 +1,5 @@
 const artikelData = {
-  "judul": "Melangkah dengan Ilmu, Mengabdi dengan Iman: Purnawiyata Angkatan ke-3 SMP Islam & SMK Az-Zahro Bondowoso Lulus 100%",
+  "judul": "Meriah Purnawiyata Angkatan ke 3 SMP Islam Az Zahro & SMK Az Zahro",
   "gambar": "https://i.ibb.co.com/xtgtRBY3/gambar1pesertapurnawiyata.jpg",
   "tanggal": "3 Juni 2026",
   "konten": `<p><strong>BONDOWOSO</strong> – Suasana khidmat bercampur haru menyelimuti Aula Pondok Pesantren Salafiyah Syafi'iyah Az-Zahro. Yayasan pendidikan berbasis pesantren ini sukses menggelar prosesi Lepas Pisah atau Purnawiyata Angkatan ke-3 untuk siswa-siswi Kelas IX SMP Islam Az-Zahro dan Kelas XII SMK Az-Zahro Tahun Pelajaran 2025/2026. Momen bersejarah ini kian istimewa dengan pengumuman raihan kelulusan gemilang mencapai 100% bagi seluruh peserta didik.</p>
