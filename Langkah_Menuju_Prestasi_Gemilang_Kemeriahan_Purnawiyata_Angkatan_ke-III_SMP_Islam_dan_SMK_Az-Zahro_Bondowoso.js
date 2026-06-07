@@ -1,4 +1,4 @@
-cost artikelData = {
+artikelData = {
   "judul": "Langkah Menuju Prestasi Gemilang: Kemeriahan Purnawiyata Angkatan ke-III SMP Islam dan SMK Az-Zahro Bondowoso",
   "gambar": "https://i.ibb.co.com/xtgtRBY3/gambar1pesertapurnawiyata.jpg",
   "tanggal": "3 Juni 2026",
