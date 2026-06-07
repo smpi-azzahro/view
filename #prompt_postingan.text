@@ -1,0 +1,9 @@
+artikelData = {
+  "judul": "Siswa Kelas IX SMP Islam Az-Zahro Bondowoso Ikuti Tes Kemampuan Akademik (TKA) Berbasis Komputer",
+  "gambar": "https://smpi-azzahro.github.io/view/img/pelaksanaan-tka-2026.jpeg",
+  "tanggal": "April 6, 2026",
+  "konten": "<p><strong>BONDOWOSO</strong> – Memasuki babak akhir masa pendidikan di jenjang sekolah menengah pertama....</p>"
+};
+
+Instruksi
+Jika gambar lebih dari satu maka buatkan kode html gambar dalam "konten"
