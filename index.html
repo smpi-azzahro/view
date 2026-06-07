@@ -35,7 +35,12 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-serif-custom { font-family: 'Playfair Display', serif; }
+        
+        /* FIX: Memulihkan style bawaan HTML yang dihapus oleh Tailwind Reset (Preflight) */
         .isi-konten p { margin-bottom: 1.25rem; line-height: 1.8; }
+        .isi-konten hr { border: 0; border-top: 1px solid #e5e7eb; margin: 2rem 0; }
+        .isi-konten strong { font-weight: 700; color: #111827; }
+        .isi-konten em { font-style: italic; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
@@ -91,9 +96,10 @@
     </footer>
 
     <script>
+        // Inisialisasi ikon di awal load
         lucide.createIcons();
 
-        // 1. Tangkap langsung teks parameter dari URL (misal: 'fileartikel1')
+        // 1. Tangkap langsung teks parameter dari URL (misal: '?news=fileartikel1')
         const urlParams = new URLSearchParams(window.location.search);
         const namaBerkasBersih = urlParams.get('news');
 
@@ -117,6 +123,8 @@
                     document.getElementById('text-berita').innerHTML = artikelData.konten;
                     
                     document.getElementById('article-content').style.display = 'block';
+                    
+                    // Re-render ulang ikon Lucide yang baru masuk lewat innerHTML konten
                     lucide.createIcons();
                 } else {
                     tampilkanError("Format data di dalam file .js salah.");
@@ -138,17 +146,18 @@
             document.getElementById('error-text').innerText = pesan;
             document.getElementById('error').style.display = 'block';
             
-            // Mengubah title menjadi 'Error' agar informatif jika gagal memuat
             document.title = "Berita Tidak Ditemukan - SMP Islam Az-Zahro";
-            
             lucide.createIcons();
         }
 
+        // FIX: Fungsi menyalin tautan yang sebelumnya belum terdefinisi dengan sempurna
         function salinTautanSitus() {
             navigator.clipboard.writeText(window.location.href).then(() => {
                 const copyText = document.getElementById('copy-text');
                 copyText.innerText = 'Tautan Berhasil Disalin!';
                 setTimeout(() => { copyText.innerText = 'Salin Tautan Berita'; }, 3000);
+            }).catch(err => {
+                console.error('Gagal menyalin tautan: ', err);
             });
         }
     </script>
