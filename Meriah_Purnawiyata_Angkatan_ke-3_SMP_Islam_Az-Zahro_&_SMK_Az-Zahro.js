@@ -1,4 +1,4 @@
-artikelData = {
+const artikelData = {
   "judul": "Melangkah dengan Ilmu, Mengabdi dengan Iman: Purnawiyata Angkatan ke-3 SMP Islam & SMK Az-Zahro Bondowoso Lulus 100%",
   "gambar": "https://i.ibb.co.com/xtgtRBY3/gambar1pesertapurnawiyata.jpg",
   "tanggal": "3 Juni 2026",
